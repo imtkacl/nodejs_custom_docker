@@ -1,0 +1,22 @@
+FROM node:boron
+
+ARG PROXY_USER
+ARG PROXY_PASSWORD
+ARG PROXY_SERVER
+ARG PROXY_PORT
+ENV http_proxy http://$PROXY_USER:$PROXY_PASSWORD@$PROXY_SERVER:$PROXY_PORT/
+ENV https_proxy http://$PROXY_USER:$PROXY_PASSWORD@$PROXY_SERVER:$PROXY_PORT/
+
+ENV NODEJS_DOWNLOAD /usr/src/app
+
+# Create app directory
+RUN mkdir -p $NODEJS_DOWNLOAD
+
+ADD https://api.github.com/repos/imtkacl/nodejs-ex/git/refs/heads/master version.json
+WORKDIR $NODEJS_DOWNLOAD
+RUN git clone https://github.com/imtkacl/nodejs-ex $NODEJS_DOWNLOAD
+
+RUN npm install
+EXPOSE 8080
+CMD [ "npm", "start" ]
+
